@@ -1,15 +1,15 @@
 server:
-  port: 8088
+  port: 8888
 
 spring:
   application:
     name: config-server
 
-profiles:
-  active: native
+    profiles:
+      active: native
 
-cloud:
-  config:
-    server:
-      native:
-        search-locations: file:./config-repo
+    cloud:
+      config:
+        server:
+          native:
+            search-locations: file:./config-repo
