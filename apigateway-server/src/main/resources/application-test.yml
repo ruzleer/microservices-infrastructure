@@ -1,0 +1,40 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+    gateway:
+      routes:
+        - id: user-service-test
+          uri: http://localhost:${wiremock.server.port}
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: userServiceCB
+                fallbackUri: forward:/fallback
+                statusCodes:
+                  - 500
+                  - 502
+                  - 503
+                  - 504
+
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+        minimum-number-of-calls: 5
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 3s
